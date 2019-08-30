@@ -31,22 +31,22 @@ defmodule Vampire do
   #defp char_len(n), do: length(to_char_list(n))
  
   def task do
+    start = String.to_integer(Enum.at(System.argv,0))               #get the input numbers from the command line
+    ending = String.to_integer(Enum.at(System.argv,1))
     #the number after Stream.iterate is the starting number
-    Enum.reduce_while(Stream.iterate(1, &(&1+1)), 1, fn n, acc ->
+    Enum.reduce_while(Stream.iterate(start, &(&1+1)), 1, fn n, acc ->
       case vampire_factors(n) do
         [] -> {:cont, acc}
-        vf -> IO.puts "#{n}:\t#{inspect vf}"
-              if acc < 50, do: {:cont, acc+1}, else: {:halt, acc+1}
+        vf -> #IO.puts "#{n}:\t#{inspect vf}"
+              if n<ending  do
+               IO.puts "#{n}:\t#{inspect vf}"
+               {:cont, acc+1}
+              else
+               {:halt, acc+1}
+              end
       end
     end)
     IO.puts ""
-    #------
-    #Enum.each([16758243290880, 24959017348650, 14593825548650], fn n ->
-    #  case vampire_factors(n) do
-    #    [] -> IO.puts "#{n} is not a vampire number!"
-    #    vf -> IO.puts "#{n}:\t#{inspect vf}"
-    #  end
-    #end)
   end
 end
  
