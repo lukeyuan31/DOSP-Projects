@@ -1,21 +1,25 @@
 # Project1
 
-**TODO: Add description**
+1. **Team members:**
 
-## Installation
+Name | UFID
+---|---
+Tongjia Guo | 1949-3097
+Keyuan Lu | 2144-2855
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `project1` to your list of dependencies in `mix.exs`:
+2.**Use commands below to run the codes.**  
+In the directory of the project
 
-```elixir
-def deps do
-  [
-    {:project1, "~> 0.1.0"}
-  ]
-end
+```command
+mix compile
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/project1](https://hexdocs.pm/project1).
+After compiling, use this command to run the project
 
+```command
+mix run proj1.exs 100000 200000
+```
+
+3.The size of the work unit is divided by the number of cores. In this project, there are 8 cores so the size is 1/8 of all the problems.
+
+4.

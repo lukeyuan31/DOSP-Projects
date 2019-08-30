@@ -8,7 +8,7 @@ COP5615 Distributed Operating System Principles
 
 ## Project1
 
-### Vampaire Numbers
+### Vampire Numbers
 
 #### 1. Problem Definition  
 
