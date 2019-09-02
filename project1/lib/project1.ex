@@ -74,7 +74,10 @@ defmodule Project1 do
         [] -> {:cont, acc}
         vf -> #IO.puts "#{n}:\t#{inspect vf}"
               if n<ending  do
-               IO.puts "#{n} \t#{inspect vf}"
+               IO.puts "#{n}\t#{elem(hd(vf),0)}\t#{elem(hd(vf),1)}"     #The output is a tuple in a list, so use elem() to get the element
+               #IO.puts (hd(vf))
+               #\t#{inspect vf}
+               #IO.puts elem(hd(vf),0)
                {:cont, acc+1}
               else
                {:halt, acc+1}
