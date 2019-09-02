@@ -47,7 +47,7 @@ defmodule Project1 do
     ending = String.to_integer(Enum.at(System.argv,1))
     #the number after Stream.iterate is the starting number
     no_of_cores = System.schedulers_online
-    work_range = (ending-start) / no_of_cores |> Float.ceil |> Kernel.trunc  
+    work_range = (ending-start) / (no_of_cores) |> Float.ceil |> Kernel.trunc  
     #t = 1
     create_actors(no_of_cores, work_range, start, ending, self())             # Recursive function to create actors 
         for _ <- 1..no_of_cores do
@@ -63,9 +63,9 @@ defmodule Project1 do
     end
 
   def create_actors(no_of_cores, work_range, start, ending, pid) do                              # Actor spawning function
-        start=start+work_range+1
+        #start=start+work_range+1
         spawn(Project1, :caculator, [start, start+work_range, pid])
-        create_actors(no_of_cores - 1, work_range, start, ending, pid)
+        create_actors(no_of_cores - 1, work_range, start+work_range+1, ending, pid)
   end
 
   def caculator(start,ending,pid) do
@@ -74,7 +74,7 @@ defmodule Project1 do
         [] -> {:cont, acc}
         vf -> #IO.puts "#{n}:\t#{inspect vf}"
               if n<ending  do
-               IO.puts "#{n}:\t#{inspect vf}"
+               IO.puts "#{n} \t#{inspect vf}"
                {:cont, acc+1}
               else
                {:halt, acc+1}
@@ -82,7 +82,7 @@ defmodule Project1 do
       end
     end)
     send pid, {:ok,"done"}              #send pid back to boss
-    IO.puts "Thread Finish!"
+    #IO.puts "Thread Finish!"
   end
 end
  
