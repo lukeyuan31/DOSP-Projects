@@ -1,17 +1,4 @@
 defmodule Project1 do
-  @moduledoc """
-  Documentation for Project1.
-  """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Project1.hello()
-      :world
-
-  """
 
     # for a given number n, find the needed vampire numbers
   def factor_pairs(n) do
@@ -69,23 +56,43 @@ defmodule Project1 do
   end
 
   def caculator(start,ending,pid) do
+    start_time =System.monotonic_time(:millisecond)
     Enum.reduce_while(Stream.iterate(start, &(&1+1)), 1, fn n, acc ->
       case vampire_factors(n) do
         [] -> {:cont, acc}
         vf -> #IO.puts "#{n}:\t#{inspect vf}"
-              if n<ending  do
-               IO.puts "#{n}\t#{elem(hd(vf),0)}\t#{elem(hd(vf),1)}"     #The output is a tuple in a list, so use elem() to get the element
+              cond do
+                n<ending && length(vf)==1 ->
+                  IO.puts "#{n}\t #{elem(hd(vf),0)} #{elem(hd(vf),1)}"
+                  {:cont, acc+1}
+                n<ending && length(vf)==2 ->
+                  IO.puts "#{n}\t #{elem(hd(vf),0)} #{elem(hd(vf),1)} #{elem(Enum.at(vf,1),0)} #{elem(Enum.at(vf,1),1)}" 
+                  {:cont, acc+1}
+                true ->
+                  {:halt, acc+1}
+
+              end
+              #if n<ending  && length(vf)==1 do
+             # # IO.puts "#{n}\t #{elem(hd(vf),0)} #{elem(hd(vf),1)}"
+             #  {:cont, acc+1}
+             # if n<ending  && length(vf)==2 do
+               #for i <- 0..length(vf) do
+               
+              # IO.puts "#{n}\t #{elem(hd(vf),0)} #{elem(hd(vf),1)} #{elem(tl(vf),0)} #{elem(tl(vf),1)}"   #The output is a tuple in a list, so use elem() to get the element
+               #Enum.each(vf ,fn(s) ->IO.puts "#{elem(s,0)} #{elem(s,1)}" end)
+               #IO.puts "the length is #{length(vf)}"
                #IO.puts (hd(vf))
                #\t#{inspect vf}
                #IO.puts elem(hd(vf),0)
-               {:cont, acc+1}
-              else
-               {:halt, acc+1}
-              end
+            #   {:cont, acc+1}
+             # else
+             #  {:halt, acc+1}
+             # end
       end
     end)
-    send pid, {:ok,"done"}              #send pid back to boss
-    #IO.puts "Thread Finish!"
+    send pid, {:ok,"done"} 
+    end_time= System.monotonic_time(:millisecond)             #send pid back to boss
+    #IO.puts to_string(end_time-start_time)
   end
 end
  

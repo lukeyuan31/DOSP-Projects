@@ -1,7 +1,12 @@
 
 #{_clock_time, {_cpu_time, results}} = :timer.tc(fn ->
-        Project1.task
+prev_real = System.monotonic_time(:millisecond)
+Project1.task
 #  end)
+
+current_real = System.monotonic_time(:millisecond)
+IO.puts "Real time " <> to_string(current_real-prev_real)
+
 
 
 #Enum.each(results, fn x -> IO.puts x end)
