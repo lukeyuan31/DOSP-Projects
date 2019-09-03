@@ -12,9 +12,12 @@ defmodule Project1 do
     for i <- min .. max, rem(n, i) == 0, do: {i, div(n, i)}     # rem: 求余
   end
  
+
+   # First skip the numbers that have an odd length, then sort the numbers.
+   # Use Enum.filter() to sort out the pairs that meet the standard of vampire numbers 
   def vampire_factors(n) do
     charlen_of_n=length(to_charlist(n))
-    if rem(charlen_of_n, 2) == 1 do          #skip the numbers that have a odd length
+    if rem(charlen_of_n, 2) == 1 do          
       []
     else
       half = div(length(to_charlist(n)), 2)
@@ -27,22 +30,20 @@ defmodule Project1 do
     end
   end
  
-  #defp char_len(n), do: length(to_char_list(n))
- 
+
+   # Divide the whole task into several tasks according to the number of core of the computer.
+   # Then create actors and distribute the tasks to each actor.
   def task do
     start = String.to_integer(Enum.at(System.argv,0))               #get the input numbers from the command line
     ending = String.to_integer(Enum.at(System.argv,1))
-    #the number after Stream.iterate is the starting number
     no_of_cores = System.schedulers_online
     work_range = (ending-start) / (no_of_cores) |> Float.ceil |> Kernel.trunc  
-    #t = 1
     create_actors(no_of_cores, work_range, start, ending, self())             # Recursive function to create actors 
         for _ <- 1..no_of_cores do
             receive do
                 {:ok, _} -> nil
             end
         end
-    #caculator(start,ending)
   end
 
   def create_actors(no_of_cores, work_range, start, ending, pid) when no_of_cores <= 1 do        # Only last actor spawning function
