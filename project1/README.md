@@ -4,7 +4,7 @@
 
 Name | UFID
 ---|---
-Tongjia Guo | 1949-3097
+Tongjia Guo | 1939-4097
 Keyuan Lu | 2144-2855
 
 2.**Use commands below to run the codes.**  
@@ -20,7 +20,7 @@ After compiling, use this command to run the project
 mix run proj1.exs 100000 200000
 ```
 
-3.The size of the work unit is divided by the number of cores. In this project, there are 8 cores so the size is 1/8 of all the problems.
+3.The size of the work unit is divided by the number of cores. In this project, if there are n cores then the size is 1/n of all the problems.
 
 4.Result
 
@@ -100,9 +100,9 @@ the output is :
 ```number
 real	0m0.865s
 user	0m4.153s
-sys	    0m0.132s
+sys	  0m0.132s
 ```
 
-Thus the ratio is 0.865/0.132=6.6
+Thus the ratio is (0.132+4.153)/0.865=5
 
 6.The largest vampire number I found is 98977920  9920 9726

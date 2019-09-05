@@ -5,7 +5,7 @@ Project1.task
 #  end)
 
 current_real = System.monotonic_time(:millisecond)
-IO.puts "Real time " <> to_string(current_real-prev_real)
+#IO.puts "Real time " <> to_string(current_real-prev_real)
 
 
 
