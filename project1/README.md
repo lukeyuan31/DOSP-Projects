@@ -7,14 +7,14 @@ Name | UFID
 Tongjia Guo | 1939-4097
 Keyuan Lu | 2144-2855
 
-2.**Overall Design**
+2.**Overall Design**  
 Use GenServer.start_link()/3 first to create a "boss". Then create several workers using the same method. After calculating, the workers will cast the result to the boss. After all the workers have finished their tasks, the boss will then print all the results.  
 In order to avoid accidents and protect CPU, I set a timeout on the 91st line of *project1-gen.ex*
 
 ```elixir
-            after
-                0_100 -> nil
-            end
+    after
+         0_100 -> nil
+    end
 ```
 
 When testing, please adjust the timeout based on the scale of problem.
