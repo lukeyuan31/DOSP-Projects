@@ -7,7 +7,19 @@ Name | UFID
 Tongjia Guo | 1939-4097
 Keyuan Lu | 2144-2855
 
-2.**Use commands below to run the codes.**  
+2.**Overall Design**
+Use GenServer.start_link()/3 first to create a "boss". Then create several workers using the same method. After calculating, the workers will cast the result to the boss. After all the workers have finished their tasks, the boss will then print all the results.  
+In order to avoid accidents and protect CPU, I set a timeout on the 91st line of *project1-gen.ex*
+
+```elixir
+            after
+                0_100 -> nil
+            end
+```
+
+When testing, please adjust the timeout based on the scale of problem.
+
+3.**Use commands below to run the codes.**  
 In the directory of the project
 
 ```command
@@ -20,9 +32,9 @@ After compiling, use this command to run the project
 mix run proj1.exs 100000 200000
 ```
 
-3.The size of the work unit is divided by the number of cores. In this project, if there are n cores then the size is 1/n of all the problems.
+4.The size of the work unit is divided by the number of cores. In this project, if there are n cores then the size is 1/n of all the problems.
 
-4.Result
+5.Result
 
 ```number
 150300	 501 300
@@ -89,7 +101,7 @@ mix run proj1.exs 100000 200000
 124483	 443 281
 ```
 
-5.Use the command below to run the project:
+6.Use the command below to run the project:
 
 ```command
 time mix run proj1.exs 100000 200000
@@ -98,13 +110,13 @@ time mix run proj1.exs 100000 200000
 the output is :
 
 ```number
-real	0m0.865s
-user	0m4.153s
-sys	  0m0.132s
+real    0m1.119s
+user    0m3.995s
+sys     0m0.162s
 ```
 
-Thus the ratio is (0.132+4.153)/0.865=5
+Thus the ratio is (0.162+3.995)/1.119=4.157
 
-6.The largest problem I solved is from 100000 to 100000000. The largest vampire number I found is 98977920  9920 9726
+7.The largest problem I solved is from 100000 to 100000000. The largest vampire number I found is 98977920  9920 9726
 
 
