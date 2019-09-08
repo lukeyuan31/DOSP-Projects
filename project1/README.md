@@ -105,4 +105,6 @@ sys	  0m0.132s
 
 Thus the ratio is (0.132+4.153)/0.865=5
 
-6.The largest vampire number I found is 98977920  9920 9726
+6.The largest problem I solved is from 100000 to 100000000. The largest vampire number I found is 98977920  9920 9726
+
+
