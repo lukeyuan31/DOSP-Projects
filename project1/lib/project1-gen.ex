@@ -12,6 +12,7 @@ defmodule Project1_gen do
         receive do
             {:ok, _}-> nil
         end
+
     end
 
     def handle_cast({:add_result, new_result},result) do
