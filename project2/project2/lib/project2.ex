@@ -93,7 +93,7 @@ defmodule GossipSimulator do
 
   def createFull(allNodes) do
     Enum.each(allNodes, fn(k) ->
-      adjList=List.delete(allNodes,k) 
+      #adjList=List.delete(allNodes,k) 
       Enum.each(allNodes, fn(x) ->
       if x!=k do
         GenServer.call(k, {:UpdateAdjacentState,x})
@@ -102,6 +102,26 @@ defmodule GossipSimulator do
    end)
   end
 
+  def createLine(allNodes)do
+    Enum.each(allNodes, fn(i) ->
+      index_of_i=Enum.find_index(allNodes, fn(m) -> m==i end)
+      Enum.each(allNodes, fn(j) ->
+        index_of_j=Enum.find_index(allNodes, fn(n) ->n==j end)
+        cond do
+          index_of_j==index_of_i-1 ->
+            left_neighbor=Enum.fetch!(allNodes,index_of_j)
+            GenServer.call(i,{:UpdateAdjacentState,left_neighbor})
+          index_of_j==index_of_i+1 ->
+            right_neighbor= Enum.fetch!(allNodes, index_of_j)
+            GenServer.call(i,{:UpdateAdjacentState,right_neighbor})
+          true ->
+            nil
+        end
+
+      end)
+
+    end)
+  end
 
   def selectAlgorithm(algorithm,allNodes, startTime) do
     case algorithm do
@@ -183,7 +203,7 @@ defmodule GossipSimulator do
     case topology do
       "full" ->createFull(allNodes)
     #  "rand2D" ->buildRand2D(allNodes)
-    #  "line" ->buildLine(allNodes)
+      "line" ->createLine(allNodes)
     #  "impLine" ->buildImpLine(allNodes)
     #  "torus" -> buildTorus(allNodes)
     #  "3D" -> build3D(allNodes)
