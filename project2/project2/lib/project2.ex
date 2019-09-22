@@ -97,6 +97,8 @@ defmodule GossipSimulator do
     {:reply,a, state}
   end
 
+  
+
   def main() do
 
     # Check the format of input
@@ -114,17 +116,30 @@ defmodule GossipSimulator do
     table = :ets.new(:table, [:named_table,:public])
     :ets.insert(table, {"globalCount",0})
 
-
-    allNodes = Enum.map((1..numNodes), fn(x) ->
+    if (topology=="3DTorus") do
+      numNodes=round(:math.pow(:math.ceil(:math.pow(numNodes,1/3)),3))
+      allNodes = Enum.map((1..numNodes), fn(x) ->
         pid=create_node()
         updatePID(pid, x)
             # IO.inspect(pid)
         pid
         end)
+        startTime = System.monotonic_time(:millisecond)
+        selectTopology(topology,allNodes)
+        selectAlgorithm(algorithm, allNodes, startTime)
+    else
+      allNodes = Enum.map((1..numNodes), fn(x) ->
+        pid=create_node()
+        updatePID(pid, x)
+            # IO.inspect(pid)
+        pid
+        end)
+        startTime = System.monotonic_time(:millisecond)
+        selectTopology(topology,allNodes)
+        selectAlgorithm(algorithm, allNodes, startTime)
+    end
 
-    startTime = System.monotonic_time(:millisecond)
-    selectTopology(topology,allNodes)
-    selectAlgorithm(algorithm, allNodes, startTime)
+    
     end
     end
 
@@ -182,11 +197,93 @@ defmodule GossipSimulator do
             distance=(x_of_m-x_of_n)*(x_of_m-x_of_n)+(y_of_m-y_of_n)*(y_of_m-y_of_n)
             #IO.puts("#{distance}")
             cond do
-              distance <= 0_1 ->
+              distance <= 0_01 ->
                 GenServer.call(m, {:UpdateAdjacentState,n})
               true ->nil
             end
         end)
+    end)
+  end
+
+  def create3DTorus(allNodes) do
+    totalNum=Enum.count(allNodes)
+    length=:math.pow(totalNum,1/3)
+    length_of_cube=round(length)
+    area_of_square=length_of_cube*length_of_cube
+    height=round(totalNum/area_of_square)
+    #For each actor, add the neighbor one by one in the order of down, up, left, right, front and back
+    Enum.each(allNodes, fn(n) ->
+      index_of_n=Enum.find_index(allNodes, fn(m) -> m==n end)
+      #IO.puts("#{index_of_n}")
+      #check if the actor is at the bottom of the torus
+      if((index_of_n+1)>area_of_square) do
+        index_of_neighbor1=index_of_n-area_of_square
+        neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor1})
+      else
+        index_of_neighbor1=index_of_n+(area_of_square*(height-1))
+        neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor1})
+      end
+
+      #check if the actor is on the top of the torus
+      if((totalNum-index_of_n-1)>area_of_square) do
+        index_of_neighbor2=index_of_n+area_of_square
+        neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor2})
+      else
+        index_of_neighbor2=index_of_n-(area_of_square*(height-1))
+        neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor2})
+      end
+
+      #check if the actor is on the left side of the torus
+      if(rem(index_of_n,length_of_cube)!=0) do
+        index_of_neighbor3=index_of_n-1
+        neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor3})
+      else
+        index_of_neighbor3=index_of_n+length_of_cube-1
+        neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor3})
+      end
+
+      #check if the actor is on the right side of the torus
+      if(rem(index_of_n+1,length_of_cube)!=0) do
+        index_of_neighbor4=index_of_n+1
+        neighbor4=Enum.fetch!(allNodes,index_of_neighbor4)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor4})
+      else
+        #IO.puts("catching neighbor 4")
+        index_of_neighbor4=index_of_n-length_of_cube+1
+        neighbor4=Enum.fetch!(allNodes,index_of_neighbor4)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor4})
+      end
+
+      #check if the actor is on the front side of the torus
+      if(rem(index_of_n,area_of_square)>=length_of_cube) do
+        index_of_neighbor5=index_of_n-length_of_cube
+        neighbor5=Enum.fetch!(allNodes,index_of_neighbor5)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor5})
+      else
+        #IO.puts("catching n5")
+        index_of_neighbor5=index_of_n+length_of_cube*(length_of_cube-1)
+        neighbor5=Enum.fetch!(allNodes,index_of_neighbor5)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor5})
+      end
+
+      #check if the actor is on the back side of the torus
+      if(rem(index_of_n+length_of_cube,area_of_square)>=length_of_cube) do
+        index_of_neighbor6=index_of_n+length_of_cube
+        neighbor6=Enum.fetch!(allNodes,index_of_neighbor6)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor6})
+      else
+        #IO.puts("catching n6")
+        index_of_neighbor6=index_of_n-length_of_cube*(length_of_cube-1)
+        neighbor6=Enum.fetch!(allNodes,index_of_neighbor6)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor6})
+      end
+
     end)
   end
 
@@ -271,7 +368,7 @@ defmodule GossipSimulator do
       "full" ->createFull(allNodes)
       "rand2D" ->createRand2D(allNodes)
       "line" ->createLine(allNodes)
-    #  "impLine" ->buildImpLine(allNodes)
+      "3DTorus" ->create3DTorus(allNodes)
     #  "torus" -> buildTorus(allNodes)
     #  "3D" -> build3D(allNodes)
     end
