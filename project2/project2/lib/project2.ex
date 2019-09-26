@@ -8,7 +8,7 @@ defmodule GossipSimulator do
   end
 
   def init(:ok) do
-    {:ok, {0,0,[],1,0,0}} #{s,pscount,adjList,w,x-coordinate,y-coordinate} , {nodeId,count,adjList,w}
+    {:ok, {0,0,[],1,0,0}} #{s,pscount,adjList,w,x-coordinate,y-coordinate} 
   end
 
   def updatePID(pid,nodeID) do
@@ -303,27 +303,21 @@ defmodule GossipSimulator do
     totalNum=Enum.count(allNodes)
     length=:math.sqrt(totalNum)
     length_of_square=round(length)
-    #IO.puts("#{length}")
-    
-    #check if the node is on the bottom of the honey comb
+  
     Enum.each(allNodes, fn(n)->
     index_of_n=Enum.find_index(allNodes, fn(m) -> m==n end)
     rowNum=trunc((index_of_n)/length_of_square)
     colNum=rem(index_of_n,length_of_square)
-    #IO.puts("#{rowNum}")
     
+    #in the condition of odd row and odd coloum, the neighbor should be up, right and down
+
     if(rem(rowNum,2)==0 && rem(colNum,2)==0 ) do
-      IO.puts("#{rowNum},#{colNum}")
-      #IO.puts("jishuhang jisuhwei")
-      #IO.puts("zai jisuhhang")
       #check if the node is on the upper edge
       if((totalNum-index_of_n-1)>length_of_square) do
         index_of_neighbor1=index_of_n+length_of_square
         neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
         GenServer.call(n,{:UpdateAdjacentState,neighbor1})
-      IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
-
-        
+      #IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
       end
 
       #check if the node is on the lower edge
@@ -331,78 +325,76 @@ defmodule GossipSimulator do
         index_of_neighbor2=index_of_n-length_of_square
         neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
         GenServer.call(n,{:UpdateAdjacentState,neighbor2})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
-
+       # IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
       end
-
       #check if the node is on the rightmost edge
       if(rem((index_of_n+1),length_of_square)!=0) do
         index_of_neighbor3=index_of_n+1
         neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
         GenServer.call(n,{:UpdateAdjacentState,neighbor3})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+        #IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
 
       end
 
     end
 
+     #in the condition of even row and even coloum, the neighbor should be up, right and down
+
     if(rem(rowNum,2)==1 && rem(colNum,2)==1 ) do
-      IO.puts("#{rowNum},#{colNum}")
-      #IO.puts("oushuhang oushuwei")
-      #IO.puts("zai jisuhhang")
       #check if the node is on the upper edge
       if((totalNum-index_of_n)>length_of_square) do
         index_of_neighbor1=index_of_n+length_of_square
         neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
         GenServer.call(n,{:UpdateAdjacentState,neighbor1})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+        #IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
       end
       #check if the node is on the rightmost edge
       if(rem((index_of_n+1),length_of_square)!=0) do
         index_of_neighbor3=index_of_n+1
         neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
         GenServer.call(n,{:UpdateAdjacentState,neighbor3})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+       # IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
       end
 
+      #because it is in even row, it must have a neighor under
       index_of_neighbor2=index_of_n-length_of_square
       neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
       GenServer.call(n,{:UpdateAdjacentState,neighbor2})
-      IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+      #IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
     end
 
     if(rem(rowNum,2)==0 && rem(colNum,2)==1) do
-      IO.puts("#{rowNum},#{colNum}")
+     # IO.puts("#{rowNum},#{colNum}")
       #IO.puts("jishuhang oushuwei")
       if((totalNum-index_of_n)>length_of_square) do
         index_of_neighbor1=index_of_n+length_of_square
         neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
         GenServer.call(n,{:UpdateAdjacentState,neighbor1})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+       # IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
       end
 
       if(index_of_n>length_of_square) do
         index_of_neighbor2=index_of_n-length_of_square
         neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
         GenServer.call(n,{:UpdateAdjacentState,neighbor2})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+        #IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
       end
 
       index_of_neighbor3=index_of_n-1
       neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
       GenServer.call(n,{:UpdateAdjacentState,neighbor3})
-      IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+      #IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
     end
 
     if(rem(rowNum,2)==1 && rem(colNum,2)==0) do
-      IO.puts("#{rowNum},#{colNum}")
+      #IO.puts("#{rowNum},#{colNum}")
       #IO.puts("ousuhang jishuwei")
       #check if the node is on the upper edge
       if((totalNum-index_of_n)>length_of_square) do
         index_of_neighbor1=index_of_n+length_of_square
         neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
         GenServer.call(n,{:UpdateAdjacentState,neighbor1})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+       # IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
       end
 
       #check if the node is on the lower edge
@@ -410,7 +402,7 @@ defmodule GossipSimulator do
         index_of_neighbor2=index_of_n-length_of_square
         neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
         GenServer.call(n,{:UpdateAdjacentState,neighbor2})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+       # IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
       end
 
       #check if the node is on the leftmost edge
@@ -418,7 +410,7 @@ defmodule GossipSimulator do
         index_of_neighbor3=index_of_n-1
         neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
         GenServer.call(n,{:UpdateAdjacentState,neighbor3})
-        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+       # IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
       end
 
     end
@@ -431,7 +423,7 @@ defmodule GossipSimulator do
   def selectAlgorithm(algorithm,allNodes, startTime) do
     case algorithm do
       "gossip" -> startGossip(allNodes, startTime)
-      #"push-sum" ->startPushSum(allNodes, startTime)
+      "push-sum" ->startPushSum(allNodes, startTime)
     end
   end
 
@@ -441,10 +433,61 @@ defmodule GossipSimulator do
     loopGossip(randomFirstNode, startTime, allNodes)
   end
 
+  def startPushSum(allNodes, startTime) do
+    randomFirstNode = Enum.random(allNodes)
+    GenServer.cast(randomFirstNode, {:transmitPushSum,0,0,startTime, length(allNodes)})
+  end
+
+  def loopPushSum(randomNode, currentS, currentW,startTime, total_nodes) do
+    GenServer.cast(randomNode, {:transmitPushSum,currentS,currentW,startTime, total_nodes})
+  end
+
+
+  def handle_cast({:transmitPushSum,receivedS,receivedW,startTime, total_nodes},state) do
+
+    {s,pscount,adjList,w,x,y} = state  
+    currentS = s + receivedS
+    currentW = w + receivedW
+    ratioDiff = abs((currentS/currentW) - (s/w))
+    if(ratioDiff<:math.pow(10,-10)) do
+      if pscount<2 do
+        pscount = pscount + 1
+        randomNode = Enum.random(adjList)
+        newS=currentS/2
+        newW=currentW/2
+        loopPushSum(randomNode, newS, newW,startTime, total_nodes)
+        state = {currentS/2,pscount,adjList,currentW/2,x,y}
+        {:noreply,state}
+      else
+        count = :ets.update_counter(:table, "globalCount", {2,1})
+        if count == total_nodes do
+          endTime = System.monotonic_time(:millisecond) - startTime
+          IO.puts "Convergence time for push-sum for #{count} nodes was achieved in " <> Integer.to_string(endTime) <>" Milliseconds"
+          System.halt(1)
+          {:noreply,state}
+        else
+          randomNode = Enum.random(adjList)
+          newS=currentS/2
+          newW=currentW/2
+          loopPushSum(randomNode, newS, newW,startTime, total_nodes)
+          state = {currentS/2,pscount,adjList,currentW/2,x,y}
+          {:noreply,state}
+        end
+      end
+    else
+      pscount = 0
+      randomNode = Enum.random(adjList)
+      newS=currentS/2
+      newW=currentW/2
+      loopPushSum(randomNode, newS, newW,startTime, total_nodes)
+      state = {newS,pscount,adjList,newW,x,y}
+      {:noreply,state}
+    end
+
+
+  end
 
   def periodicGossipTransmission(adjacentList, startTime, allNodes) do
-   # spawn(Parse_Csv,:parseCsvFiles,[self])
-    # IO.inspect adjacentList
     chosenRandomAdjacent=Enum.random(adjacentList)
     Task.start(GossipSimulator,:transmitGossip,[chosenRandomAdjacent, startTime, allNodes])
     :timer.sleep 2
@@ -476,7 +519,6 @@ defmodule GossipSimulator do
 
 
   def transmitGossip(pid, startTime, allNodes) do
-    #Data store count update
     updateStateCount(pid, startTime, allNodes)
     loopGossip(pid, startTime, allNodes)
   end
