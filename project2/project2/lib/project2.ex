@@ -117,7 +117,20 @@ defmodule GossipSimulator do
     :ets.insert(table, {"globalCount",0})
 
     if (topology=="3DTorus") do
+      # round up to the nearest cube
       numNodes=round(:math.pow(:math.ceil(:math.pow(numNodes,1/3)),3))
+      allNodes = Enum.map((1..numNodes), fn(x) ->
+        pid=create_node()
+        updatePID(pid, x)
+            # IO.inspect(pid)
+        pid
+        end)
+        startTime = System.monotonic_time(:millisecond)
+        selectTopology(topology,allNodes)
+        selectAlgorithm(algorithm, allNodes, startTime)
+    else
+      if (topology=="honeycomb" || topology=="randhoneycomb") do
+      numNodes=round(:math.pow(:math.ceil(:math.sqrt(numNodes)),2))
       allNodes = Enum.map((1..numNodes), fn(x) ->
         pid=create_node()
         updatePID(pid, x)
@@ -138,8 +151,7 @@ defmodule GossipSimulator do
         selectTopology(topology,allNodes)
         selectAlgorithm(algorithm, allNodes, startTime)
     end
-
-    
+    end
     end
     end
 
@@ -287,6 +299,135 @@ defmodule GossipSimulator do
     end)
   end
 
+  def createHoneycomb(allNodes) do
+    totalNum=Enum.count(allNodes)
+    length=:math.sqrt(totalNum)
+    length_of_square=round(length)
+    #IO.puts("#{length}")
+    
+    #check if the node is on the bottom of the honey comb
+    Enum.each(allNodes, fn(n)->
+    index_of_n=Enum.find_index(allNodes, fn(m) -> m==n end)
+    rowNum=trunc((index_of_n)/length_of_square)
+    colNum=rem(index_of_n,length_of_square)
+    #IO.puts("#{rowNum}")
+    
+    if(rem(rowNum,2)==0 && rem(colNum,2)==0 ) do
+      IO.puts("#{rowNum},#{colNum}")
+      #IO.puts("jishuhang jisuhwei")
+      #IO.puts("zai jisuhhang")
+      #check if the node is on the upper edge
+      if((totalNum-index_of_n-1)>length_of_square) do
+        index_of_neighbor1=index_of_n+length_of_square
+        neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor1})
+      IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+
+        
+      end
+
+      #check if the node is on the lower edge
+      if(index_of_n>length_of_square) do
+        index_of_neighbor2=index_of_n-length_of_square
+        neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor2})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+
+      end
+
+      #check if the node is on the rightmost edge
+      if(rem((index_of_n+1),length_of_square)!=0) do
+        index_of_neighbor3=index_of_n+1
+        neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor3})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+
+      end
+
+    end
+
+    if(rem(rowNum,2)==1 && rem(colNum,2)==1 ) do
+      IO.puts("#{rowNum},#{colNum}")
+      #IO.puts("oushuhang oushuwei")
+      #IO.puts("zai jisuhhang")
+      #check if the node is on the upper edge
+      if((totalNum-index_of_n)>length_of_square) do
+        index_of_neighbor1=index_of_n+length_of_square
+        neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor1})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+      end
+      #check if the node is on the rightmost edge
+      if(rem((index_of_n+1),length_of_square)!=0) do
+        index_of_neighbor3=index_of_n+1
+        neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor3})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+      end
+
+      index_of_neighbor2=index_of_n-length_of_square
+      neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
+      GenServer.call(n,{:UpdateAdjacentState,neighbor2})
+      IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+    end
+
+    if(rem(rowNum,2)==0 && rem(colNum,2)==1) do
+      IO.puts("#{rowNum},#{colNum}")
+      #IO.puts("jishuhang oushuwei")
+      if((totalNum-index_of_n)>length_of_square) do
+        index_of_neighbor1=index_of_n+length_of_square
+        neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor1})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+      end
+
+      if(index_of_n>length_of_square) do
+        index_of_neighbor2=index_of_n-length_of_square
+        neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor2})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+      end
+
+      index_of_neighbor3=index_of_n-1
+      neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
+      GenServer.call(n,{:UpdateAdjacentState,neighbor3})
+      IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+    end
+
+    if(rem(rowNum,2)==1 && rem(colNum,2)==0) do
+      IO.puts("#{rowNum},#{colNum}")
+      #IO.puts("ousuhang jishuwei")
+      #check if the node is on the upper edge
+      if((totalNum-index_of_n)>length_of_square) do
+        index_of_neighbor1=index_of_n+length_of_square
+        neighbor1=Enum.fetch!(allNodes,index_of_neighbor1)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor1})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor1}")
+      end
+
+      #check if the node is on the lower edge
+      if(index_of_n>length_of_square) do
+        index_of_neighbor2=index_of_n-length_of_square
+        neighbor2=Enum.fetch!(allNodes,index_of_neighbor2)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor2})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor2}")
+      end
+
+      #check if the node is on the leftmost edge
+      if(rem((index_of_n+1),length_of_square)!=1) do
+        index_of_neighbor3=index_of_n-1
+        neighbor3=Enum.fetch!(allNodes,index_of_neighbor3)
+        GenServer.call(n,{:UpdateAdjacentState,neighbor3})
+        IO.puts("#{index_of_n} has a neighbor of #{index_of_neighbor3}")
+      end
+
+    end
+
+    end)
+    
+    
+  end
+
   def selectAlgorithm(algorithm,allNodes, startTime) do
     case algorithm do
       "gossip" -> startGossip(allNodes, startTime)
@@ -369,6 +510,7 @@ defmodule GossipSimulator do
       "rand2D" ->createRand2D(allNodes)
       "line" ->createLine(allNodes)
       "3DTorus" ->create3DTorus(allNodes)
+      "honeycomb" ->createHoneycomb(allNodes)
     #  "torus" -> buildTorus(allNodes)
     #  "3D" -> build3D(allNodes)
     end
