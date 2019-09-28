@@ -102,11 +102,7 @@ defmodule GossipSimulator do
   def main() do
 
     # Check the format of input
-    if (Enum.count(System.argv())!=3) do
-        IO.puts("Incorrect input!")
-         System.halt(1)
-
-    else
+    
     numNodes = String.to_integer(Enum.at(System.argv,0))
     topology = Enum.at(System.argv,1)
     algorithm = Enum.at(System.argv,2)
@@ -116,7 +112,7 @@ defmodule GossipSimulator do
     table = :ets.new(:table, [:named_table,:public])
     :ets.insert(table, {"globalCount",0})
 
-    if (topology=="3DTorus") do
+    if (topology=="3Dtorus") do
       # round up to the nearest cube
       numNodes=round(:math.pow(:math.ceil(:math.pow(numNodes,1/3)),3))
       allNodes = Enum.map((1..numNodes), fn(x) ->
@@ -150,7 +146,7 @@ defmodule GossipSimulator do
     end
     end
     end
-    end
+    
 
 
   def createFull(allNodes) do
@@ -571,8 +567,8 @@ defmodule GossipSimulator do
     {s,pscount,adjList,w,x,y} = state  
     currentS = s + receivedS
     currentW = w + receivedW
-    ratioDiff = abs((currentS/currentW) - (s/w))
-    if(ratioDiff<:math.pow(10,-10)) do
+    diff = abs((currentS/currentW) - (s/w))
+    if(diff<1.0e-10) do
       if pscount<2 do
         pscount = pscount + 1
         randomNode = Enum.random(adjList)
@@ -614,7 +610,6 @@ defmodule GossipSimulator do
     chosenRandomAdjacent=Enum.random(adjacentList)
     Task.start(GossipSimulator,:transmitGossip,[chosenRandomAdjacent, startTime, allNodes])
     :timer.sleep 2
-
     periodicGossipTransmission(chosenRandomAdjacent, startTime, allNodes)
   end
 
@@ -639,13 +634,10 @@ defmodule GossipSimulator do
 
   end
 
-
-
   def transmitGossip(pid, startTime, allNodes) do
     updateStateCount(pid, startTime, allNodes)
     loopGossip(pid, startTime, allNodes)
   end
-
 
   def updateStateCount(pid, startTime, allNodes) do
 
@@ -668,7 +660,6 @@ defmodule GossipSimulator do
   {:reply, b+1, state}
   end
 
-
   def selectTopology(topology,allNodes) do
     case topology do
       "full" ->createFull(allNodes)
@@ -680,7 +671,6 @@ defmodule GossipSimulator do
     end
   end
 
-
   def waitIndefinitely() do
     waitIndefinitely()
   end
@@ -691,8 +681,6 @@ defmodule GossipSimulator do
   end
 
 end
-
-
 #testnum=GossipSimulator.randomtest()
 #IO.puts("#{testnum}")
 GossipSimulator.main()
