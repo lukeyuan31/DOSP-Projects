@@ -9,11 +9,11 @@ Tongjia Guo | 1939-4097
 
 ## What is Working
 
-### Topologies:  
+### Topologies
 
 Full Network  
-Line   
-Random 2D Grid   
+Line  
+Random 2D Grid  
 3D torus Grid  
 Honeycomb  
 Honeycomb with a random neighbor
@@ -23,9 +23,7 @@ Honeycomb with a random neighbor
 Gossip  
 Push-Sum
 
-
 ## Largest Network
-
 
  | Topology | Gossip | Push-Sum
 ---|---|---
@@ -36,6 +34,4 @@ Push-Sum
 | Honeycomb | 10000  | 30000
 | RandHoneycomb | 10000 |30000
 
-
 Due to the limited memory and quality of code, the performance of push-sum is better than that of gossip.
-
