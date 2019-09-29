@@ -1,6 +1,9 @@
 defmodule GossipSimulator do
   use GenServer
 
+  def waitInfinitly() do
+    waitInfinitly()
+  end
 
   def create_node() do
     {:ok,pid}=GenServer.start_link(__MODULE__, :ok,[])
@@ -99,14 +102,21 @@ defmodule GossipSimulator do
 
   
 
-  def main() do
-
+  def main(args) do
+      args |> parse_args
+  end
     # Check the format of input
     
-    numNodes = String.to_integer(Enum.at(System.argv,0))
-    topology = Enum.at(System.argv,1)
-    algorithm = Enum.at(System.argv,2)
 
+  defp parse_args (args)do
+    {_,k,_} = OptionParser.parse(args)
+  
+    #numNodes = String.to_integer(Enum.at(System.argv,0))
+    #topology = Enum.at(System.argv,1)
+    #algorithm = Enum.at(System.argv,2)
+    numNodes = String.to_integer(Enum.at(k,0))
+    topology = Enum.at(k,1)
+    algorithm = Enum.at(k,2)
 
         # globalCount holds count of number of nodes who have received the message at least once
     table = :ets.new(:table, [:named_table,:public])
@@ -145,7 +155,8 @@ defmodule GossipSimulator do
         selectAlgorithm(algorithm, allNodes, startTime)
     end
     end
-    end
+    waitInfinitly()
+  end
     
 
 
@@ -609,8 +620,9 @@ defmodule GossipSimulator do
   def periodicGossipTransmission(adjacentList, startTime, allNodes) do
     chosenRandomAdjacent=Enum.random(adjacentList)
     Task.start(GossipSimulator,:transmitGossip,[chosenRandomAdjacent, startTime, allNodes])
-    :timer.sleep 2
-    periodicGossipTransmission(chosenRandomAdjacent, startTime, allNodes)
+    #:timer.sleep 2
+    newAdjacentList=getAdjacentList(chosenRandomAdjacent)
+    periodicGossipTransmission(newAdjacentList, startTime, allNodes)
   end
 
   def loopGossip(chosenRandomNode, startTime, allNodes) do
@@ -671,9 +683,7 @@ defmodule GossipSimulator do
     end
   end
 
-  def waitIndefinitely() do
-    waitIndefinitely()
-  end
+  
 
   def randomFloat() do
     :rand.uniform()
@@ -683,5 +693,5 @@ defmodule GossipSimulator do
 end
 #testnum=GossipSimulator.randomtest()
 #IO.puts("#{testnum}")
-GossipSimulator.main()
-GossipSimulator.waitIndefinitely()
+#GossipSimulator.main()
+#GossipSimulator.waitInfinitly()
