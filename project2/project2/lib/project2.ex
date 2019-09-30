@@ -130,8 +130,9 @@ defmodule GossipSimulator do
         updatePID(pid, x)
         pid
         end)
-        startTime = System.monotonic_time(:millisecond)
+        
         selectTopology(topology,allNodes)
+        startTime = System.monotonic_time(:millisecond)
         selectAlgorithm(algorithm, allNodes, startTime)
     else
       if (topology=="honeycomb" || topology=="randhoneycomb") do
@@ -141,8 +142,9 @@ defmodule GossipSimulator do
         updatePID(pid, x)     
         pid
         end)
-        startTime = System.monotonic_time(:millisecond)
+        
         selectTopology(topology,allNodes)
+        startTime = System.monotonic_time(:millisecond)
         selectAlgorithm(algorithm, allNodes, startTime)
     else
       allNodes = Enum.map((1..numNodes), fn(x) ->
@@ -150,8 +152,9 @@ defmodule GossipSimulator do
         updatePID(pid, x)
         pid
         end)
-        startTime = System.monotonic_time(:millisecond)
+        
         selectTopology(topology,allNodes)
+        startTime = System.monotonic_time(:millisecond)
         selectAlgorithm(algorithm, allNodes, startTime)
     end
     end

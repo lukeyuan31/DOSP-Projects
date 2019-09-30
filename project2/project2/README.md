@@ -27,11 +27,9 @@ Push-Sum
 
  | Topology | Gossip | Push-Sum
 ---|---|---
- | Full Network | 700 |10000
- | Random 2D | 800 | 3000
- | Line | 500 | 1000
- | 3DTorus | 10000  | 20000
-| Honeycomb | 10000  | 30000
-| RandHoneycomb | 10000 |30000
-
-Due to the limited memory and quality of code, the performance of push-sum is better than that of gossip.
+ | Full Network | 10000 |10000
+ | Random 2D | 3000 | 3000
+ | Line | 800 | 1000
+ | 3DTorus | 30000  | 30000
+| Honeycomb | 30000  | 30000
+| RandHoneycomb | 30000 |30000
