@@ -10,6 +10,8 @@ COP5615 Distributed Operating System Principles
 
 ## Project1
 
+**Grade**  *85/100*
+
 ### Vampire Numbers
 
 #### 1. Problem Definition  
@@ -27,6 +29,8 @@ The goal of this first project is to use Elixir and the actor model to build a g
 **Output**: Print, on independent lines, first the number then its fangs. If there are multiple fangs list all of them next to each other like it’s shown in the example below.
 
 ## Project2
+
+**Grade**  *120/100*
 
 ### Gossip Simulator
 
