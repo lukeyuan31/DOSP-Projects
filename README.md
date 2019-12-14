@@ -10,8 +10,6 @@ COP5615 Distributed Operating System Principles
 
 ## Project1
 
-**Grade**  *85/100*
-
 ### Vampire Numbers
 
 #### 1. Problem Definition  
@@ -29,8 +27,6 @@ The goal of this first project is to use Elixir and the actor model to build a g
 **Output**: Print, on independent lines, first the number then its fangs. If there are multiple fangs list all of them next to each other like it’s shown in the example below.
 
 ## Project2
-
-**Grade**  *120/100*
 
 ### Gossip Simulator
 
@@ -86,3 +82,40 @@ Where numNodes is the number of peers to be created in the peer to peer system a
 - Team members
 - What is working
 - What is the largest network you managed to deal with
+
+## Project 4.1
+
+### Twitter Engine
+
+#### 1. Problem definition
+
+The goal of this (and the next project) is to implement a Twitter-like engine and (in part 2) pair up with Web Sockets to provide full functionality.  
+Specific things you have to do are:  
+In part I, implement the following functionalities:  
+1.Register accountand delete account2.  
+Send  tweet.  Tweets  can  have  hashtags  (e.g.  #COP5615isgreat)  and  mentions (@bestuser). You can use predefines categories of messages for hashtags.  
+3.Subscribe to user's tweets.  
+4.Re-tweets (so that your subscribers get an interesting tweet you got by other means).  
+5.Allow querying tweets subscribed to, tweets with specific hashtags, tweets in which the user is mentioned (my mentions).  
+6.If the user is connected, deliver the above types of tweets live (without querying).  
+
+Other considerations:  
+The client part (send/receive tweets) and the engine (distribute tweets) have to be in separate processes. Preferably, you use multiple independent client processes that simulate thousands of clients and a single-engine process.  
+1.You need to measure various aspects of your simulator and report performance.  
+2.Write test cases using the elixir’s built-in ExUnit test framework verifying the correctness for each task. Specifically, you need to write unit tests and functional tests (simple scenarios in which a tweet is sent, the user is mentioned or re-tweets).Write 2-3 testsfor each functionality.  
+
+#### 2. Requirements
+**Input** The input provided (as command line to yourprogram will be of the form:
+```command
+mix run proj4 num_user num_msg
+```
+Where *num_user* is the number of actors you have to create and *num_msg* is the number of tweets a user has to make.
+
+
+## Project4.2
+
+1.  Implement a simulation with at least 100 users.
+
+2. Implement a web interface for the simulator you created project 4.1, using phoenix that allows access to the ongoing simulation using a web browser ( You might need to use the matching JavaScript library that allows Phoenix messages to be received in the browser). Create WebSockets using Phoenix channels. if you are creating a chart, you can use Charts.js
+
+You need to show all the scenarios that you implemented in 4.1.
